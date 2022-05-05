@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/index.ee297b26.css">
+    <title>To Do List</title>
+
+  <link rel="stylesheet" href="/assets/index.ee297b26.css">
+</head>
+
+<body>
+    <div class="container">
+        <ul class="flex space-x-7 px-4 py-2 text-white bg-cyan-400 h-12">
+            <li class="cursor-pointer hover:text-lg hover:text-rose-700">Home</li>
+            <li class="cursor-pointer hover:text-lg hover:text-rose-700">About</li>
+            <li class="cursor-pointer hover:text-lg hover:text-rose-700">Contact</li>
+        </ul>
+    </div>
+    <div class="text-center">
+        <p class="text-4xl py-4">TODO List</p>
+    </div>
+    <div class="flex justify-center">
+        <div class="form">
+            <p class="text-lg py-1">Title:</p>
+            <input type="text" name="" id="title" placeholder="Enter the title of your task"
+                class="border-2 border-gray-500 rounded-md px-2 py-1 w-full">
+            <p class="text-lg py-1">Description:</p>
+            <textarea name="" id="desc" cols="50" rows="3" class="border-2 border-gray-500 rounded-md px-2 py-1"
+                placeholder="Enter description of your task"></textarea>
+            <div>
+                <button type="submit" id="add"
+                    class=" text-white bg-purple-700 hover:bg-purple-800 text-lg rounded-md px-4 py-2 hover:text-emerald-300">Add
+                    Task</button>
+                <button type="submit" id="add" onclick="clearStr()"
+                    class=" text-white bg-purple-700 hover:bg-purple-800 text-lg rounded-md px-4 py-2 hover:text-emerald-300">Clear
+                    List</button>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center py-7">
+        <table class="border-2 border-gray-500 w-3/4">
+            <thead>
+                <tr class="py-1 px-4 border-2 border-gray-500">
+                    <th class="py-1 px-4">Sl. No.</th>
+                    <th class="py-1 px-4">Title</th>
+                    <th class="py-1 px-4 w-1/2">Description</th>
+                    <th class="py-1 px-4">Action</th>
+                </tr>
+            </thead>
+            <tbody id="table">
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+        function getAndUpdate() {
+            let title = document.getElementById("title").value;
+            let desc = document.getElementById("desc").value;
+            if (localStorage.getItem('itemJson') == null) {
+                itemJsonArray = [];
+                itemJsonArray.push([title, desc]);
+                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+            }
+            else {
+                itemJsonArrayStr = localStorage.getItem('itemJson');
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                itemJsonArray.push([title, desc]);
+                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+            }
+            update();
+        }
+
+        function update() {
+            if (localStorage.getItem('itemJson') == null) {
+                itemJsonArray = [];
+                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+            }
+
+            else {
+                itemJsonArrayStr = localStorage.getItem('itemJson');
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+            }
+
+            let table = document.getElementById("table");
+            let str = "";
+            itemJsonArray.forEach((element, index) => {
+                str = str + `<tr>
+                    <td class="py-1 px-4 text-center">${index + 1}</td>
+                    <td class="py-1 px-4 text-center">${element[0]}</td>
+                    <td class="py-1 px-4 text-center">${element[1]}</td>
+                    <td class="py-1 px-4 text-center"><button class="text-white bg-blue-700 px-2 py-1 rounded-md" onClick="deleted(${index})">Delete</button></td>
+                </tr> `;
+            });
+            table.innerHTML = str;
+        }
+        let add = document.getElementById("add");
+        add.addEventListener("click", getAndUpdate);
+        update();
+
+        function deleted(itemIndex) {
+            itemJsonArrayStr = localStorage.getItem('itemJson');
+            itemJsonArray = JSON.parse(itemJsonArrayStr);
+            itemJsonArray.splice(itemIndex, 1);
+            localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+            update()
+        }
+
+        function clearStr() {
+            if (confirm("Do you really want to clear?")) {
+                localStorage.clear();
+                update();
+            }
+        }
+    </script>
+</body>
+
+</html>
